@@ -1,0 +1,19 @@
+@import 'tailwindcss';
+
+/* Maps :root variables from src/theme.js to Tailwind utilities (bg-canvas, text-ink, etc.) */
+@theme {
+  --color-canvas: var(--ca-canvas);
+  --color-ink: var(--ca-ink);
+  --color-accent: var(--ca-accent);
+  --color-accent-muted: var(--ca-accent-muted);
+  --color-muted: var(--ca-muted);
+  --color-border: var(--ca-border);
+  --font-sans: var(--ca-font-sans);
+  --font-heading: var(--ca-font-heading);
+}
+
+@layer base {
+  body {
+    @apply m-0 antialiased;
+  }
+}

@@ -1,0 +1,38 @@
+---
+description: Cartwheel Arts stack, Firebase, Stripe, and code conventions
+alwaysApply: true
+---
+
+# Cartwheel Arts — Cursor Rules
+
+## Project
+
+This is a kids art class registration web app for Cartwheel Arts (cartwheelarts.org).
+
+Stack: React + Vite, Firestore (Firebase), Firebase Auth, Firebase Cloud Functions, Stripe (payments), Resend (email), Firebase Storage, deployed to Vercel.
+
+## Code Style
+
+- Use functional React components with hooks only (no class components)
+- Use async/await, never raw `.then()` chains
+- Always add error handling with try/catch on async operations
+- Use Tailwind CSS for styling (or `src/theme.js` tokens for brand colors/fonts)
+- Keep components small and single-purpose
+- Name files with PascalCase for components, camelCase for utilities
+
+## Firebase
+
+- Never expose Firebase admin credentials in client-side code
+- Use Firestore security rules — never bypass them
+- All writes that affect `spotsRemaining` must use Firestore transactions
+
+## Stripe
+
+- Always use Stripe Checkout (hosted) — never build a custom card form
+- Payment confirmation must come from a webhook, never from client-side redirect alone
+
+## General
+
+- The primary user of this app is a non-technical small business owner
+- Prefer clarity and simplicity over clever code
+- Always explain what a generated file does in a brief comment at the top
