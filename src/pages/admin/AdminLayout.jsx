@@ -2,6 +2,9 @@
  * AdminLayout — shell for all admin pages. Provides a sidebar with
  * navigation links and a sign-out button. Child routes render in the
  * main content area via <Outlet />.
+ *
+ * Rosters nav link goes to /admin/classes since rosters are per-class —
+ * Katie picks the class first, then views its roster.
  */
 import { signOut } from 'firebase/auth'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
@@ -10,7 +13,7 @@ import cartwheelLogo from '../../assets/cartwheel-logo.jpg'
 
 const navItems = [
   { label: 'Classes', path: '/admin/classes', icon: '🎨' },
-  { label: 'Rosters', path: '/admin/rosters', icon: '📋' },
+  { label: 'Rosters', path: '/admin/classes', icon: '📋' },
 ]
 
 export default function AdminLayout() {
@@ -57,28 +60,52 @@ export default function AdminLayout() {
 
         {/* Nav links */}
         <nav className="flex flex-col gap-1 px-3 py-4 flex-1">
-          {navItems.map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors"
-              style={({ isActive }) => ({
-                backgroundColor: isActive ? '#fdf1ee' : 'transparent',
-                color: isActive ? 'var(--ca-accent)' : 'var(--ca-ink)',
-                fontWeight: isActive ? 600 : 400,
-              })}
-            >
-              <span>{item.icon}</span>
-              <span>{item.label}</span>
-            </NavLink>
-          ))}
+          <NavLink
+            to="/admin/classes"
+            end
+            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors"
+            style={({ isActive }) => ({
+              backgroundColor: isActive ? '#fdf1ee' : 'transparent',
+              color: isActive ? 'var(--ca-accent)' : 'var(--ca-ink)',
+              fontWeight: isActive ? 600 : 400,
+            })}
+          >
+            <span>🎨</span>
+            <span>Classes</span>
+          </NavLink>
+
+          <NavLink
+            to="/admin/blog"
+            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors"
+            style={({ isActive }) => ({
+              backgroundColor: isActive ? '#fdf1ee' : 'transparent',
+              color: isActive ? 'var(--ca-accent)' : 'var(--ca-ink)',
+              fontWeight: isActive ? 600 : 400,
+            })}
+          >
+            <span>📝</span>
+            <span>Blog Posts</span>
+          </NavLink>
+
+          <NavLink
+            to="/admin/about"
+            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors"
+            style={({ isActive }) => ({
+              backgroundColor: isActive ? '#fdf1ee' : 'transparent',
+              color: isActive ? 'var(--ca-accent)' : 'var(--ca-ink)',
+              fontWeight: isActive ? 600 : 400,
+            })}
+          >
+            <span>👩‍🎨</span>
+            <span>About Me</span>
+          </NavLink>
         </nav>
 
         {/* Sign out */}
         <div className="px-3 pb-6">
           <button
             onClick={handleSignOut}
-            className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors"
+            className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm"
             style={{ color: 'var(--ca-muted)', background: 'none', border: 'none', cursor: 'pointer' }}
             onMouseEnter={(e) => {
               e.currentTarget.style.backgroundColor = '#fdf1ee'

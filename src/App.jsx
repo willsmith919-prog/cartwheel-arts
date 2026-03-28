@@ -1,14 +1,26 @@
 /**
- * Root router: public marketing pages + protected admin portal.
+ * Root router: public site + protected admin portal.
  * Admin routes are wrapped in ProtectedRoute — unauthenticated users
  * are redirected to /admin/login automatically.
  */
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import Layout from './components/Layout.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
+
+// Public pages
 import BlogPage from './pages/BlogPage.jsx'
-import ClassesPage from './pages/ClassesPage.jsx'
 import HomePage from './pages/HomePage.jsx'
+
+// Classes pages
+import ClassDetailPage from './pages/classes/ClassDetailPage.jsx'
+import ClassesPage from './pages/classes/ClassesPage.jsx'
+import RegistrationPage from './pages/classes/RegistrationPage.jsx'
+import RegistrationSuccessPage from './pages/classes/RegistrationSuccessPage.jsx'
+import WaitlistPage from './pages/classes/WaitlistPage.jsx'
+
+// Admin pages
+import AdminAboutPage from './pages/admin/AdminAboutPage.jsx'
+import AdminBlogPage from './pages/admin/AdminBlogPage.jsx'
 import AdminLayout from './pages/admin/AdminLayout.jsx'
 import ClassFormPage from './pages/admin/ClassFormPage.jsx'
 import ClassListPage from './pages/admin/ClassListPage.jsx'
@@ -25,6 +37,10 @@ export default function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/blog" element={<BlogPage />} />
           <Route path="/classes" element={<ClassesPage />} />
+          <Route path="/classes/:id" element={<ClassDetailPage />} />
+          <Route path="/classes/:id/register" element={<RegistrationPage />} />
+          <Route path="/classes/:id/register/success" element={<RegistrationSuccessPage />} />
+          <Route path="/classes/:id/waitlist" element={<WaitlistPage />} />
         </Route>
 
         {/* ── Admin login (public, no layout) ── */}
@@ -38,6 +54,8 @@ export default function App() {
             <Route path="/admin/classes/new" element={<ClassFormPage />} />
             <Route path="/admin/classes/:id/edit" element={<ClassFormPage />} />
             <Route path="/admin/rosters/:id" element={<RosterPage />} />
+            <Route path="/admin/blog" element={<AdminBlogPage />} />
+            <Route path="/admin/about" element={<AdminAboutPage />} />
           </Route>
         </Route>
 
