@@ -1,8 +1,9 @@
 /**
- * Browser-only Firebase app + Firestore. Config comes from Vite env vars (public).
+ * Browser-only Firebase app + Firestore + Auth. Config comes from Vite env vars (public).
  * Never add service account JSON or Stripe secret keys to this file or any client bundle.
  */
 import { getApp, getApps, initializeApp } from 'firebase/app'
+import { getAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
 
 const firebaseConfig = {
@@ -23,18 +24,10 @@ function hasRequiredConfig() {
   )
 }
 
-/**
- * Returns the default Firebase app, or null if env is not configured (e.g. local dev without .env).
- */
 export function getFirebaseApp() {
-  if (!hasRequiredConfig()) {
-    return null
-  }
+  if (!hasRequiredConfig()) return null
   try {
-    if (getApps().length > 0) {
-      return getApp()
-    }
-    return initializeApp(firebaseConfig)
+    return getApps().length > 0 ? getApp() : initializeApp(firebaseConfig)
   } catch (err) {
     console.error('Firebase init failed', err)
     return null
@@ -44,13 +37,23 @@ export function getFirebaseApp() {
 /** Firestore instance, or null if Firebase is not configured. */
 export function getDb() {
   const app = getFirebaseApp()
-  if (!app) {
-    return null
-  }
+  if (!app) return null
   try {
     return getFirestore(app)
   } catch (err) {
     console.error('getFirestore failed', err)
+    return null
+  }
+}
+
+/** Auth instance, or null if Firebase is not configured. */
+export function getAuthInstance() {
+  const app = getFirebaseApp()
+  if (!app) return null
+  try {
+    return getAuth(app)
+  } catch (err) {
+    console.error('getAuth failed', err)
     return null
   }
 }
