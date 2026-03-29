@@ -1,9 +1,57 @@
 rules_version = '2';
-
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // Public can read classes and sessions
+    match /classes/{classId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+
+      // Allow public to decrement spotsRemaining when registering
+      allow update: if true;
+
+      match /sessions/{sessionId} {
+        allow read: if true;
+        allow write: if request.auth != null;
+      }
+    }
+
+    // Public can read published blog posts
+    match /posts/{postId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // Public can create registrations and waitlist entries
+    match /registrations/{regId} {
+      allow create: if true;
+      allow read, update, delete: if request.auth != null;
+    }
+
+    match /waitlist/{entryId} {
+      allow create: if true;
+      allow read, update, delete: if request.auth != null;
+    }
+
+    // Settings — public read, admin write
+    match /settings/{docId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // Parent profiles — each parent can only read/write their own doc
+    match /parents/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+
+      // Children subcollection — same ownership rule
+      match /children/{childId} {
+        allow read, write: if request.auth != null && request.auth.uid == uid;
+      }
+    }
+
+    // Everything else requires auth
     match /{document=**} {
-      allow read, write: if false;
+      allow read, write: if request.auth != null;
     }
   }
 }

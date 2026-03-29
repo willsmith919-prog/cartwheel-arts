@@ -1,31 +1,52 @@
 /**
  * ProtectedRoute — wraps admin routes and redirects to /admin/login
- * if the user is not authenticated. Shows nothing while auth is loading
- * to prevent a flash of the login page on refresh.
+ * if the user is not authenticated. Also blocks parent accounts (users
+ * who have a `parents/{uid}` doc) from accessing the admin portal.
  */
+import { doc, getDoc } from 'firebase/firestore'
+import { useEffect, useState } from 'react'
 import { Navigate, Outlet } from 'react-router-dom'
+import { getDb } from '../firebase/client'
 import { useAuth } from '../hooks/useAuth'
 
 export default function ProtectedRoute() {
-  const { user, loading } = useAuth()
+  const { user, loading: authLoading } = useAuth()
+  const [isParent, setIsParent] = useState(null) // null = unchecked
+  const [checkingParent, setCheckingParent] = useState(false)
 
-  // Still checking auth state — render nothing to avoid flicker
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center"
-        style={{ backgroundColor: 'var(--ca-canvas)' }}>
-        <p style={{ color: 'var(--ca-muted)', fontFamily: 'var(--ca-font-sans)' }}>
-          Loading…
-        </p>
-      </div>
-    )
-  }
+  useEffect(() => {
+    if (!user) {
+      setIsParent(null)
+      return
+    }
 
-  // Not signed in — send to login
-  if (!user) {
-    return <Navigate to="/admin/login" replace />
-  }
+    const db = getDb()
+    if (!db) {
+      setIsParent(false)
+      return
+    }
 
-  // Signed in — render the child route
+    setCheckingParent(true)
+    getDoc(doc(db, 'parents', user.uid))
+      .then((snap) => setIsParent(snap.exists()))
+      .catch(() => setIsParent(false))
+      .finally(() => setCheckingParent(false))
+  }, [user])
+
+  const spinner = (
+    <div
+      className="min-h-screen flex items-center justify-center"
+      style={{ backgroundColor: 'var(--ca-canvas)' }}
+    >
+      <p style={{ color: 'var(--ca-muted)', fontFamily: 'var(--ca-font-sans)' }}>Loading…</p>
+    </div>
+  )
+
+  if (authLoading) return spinner
+  if (!user) return <Navigate to="/admin/login" replace />
+  if (checkingParent) return spinner
+  // Parent account — not an admin
+  if (isParent) return <Navigate to="/" replace />
+
   return <Outlet />
 }

@@ -7,8 +7,14 @@ import { Link, useParams, useSearchParams } from 'react-router-dom'
 export default function RegistrationSuccessPage() {
   const { id } = useParams()
   const [searchParams] = useSearchParams()
-  const childName = searchParams.get('name') ?? 'your child'
+  const namesParam = searchParams.get('names') ?? searchParams.get('name') ?? 'your child'
   const parentEmail = searchParams.get('parent') ?? ''
+
+  const nameList = namesParam.split(',').map((n) => n.trim()).filter(Boolean)
+  const displayNames =
+    nameList.length === 1
+      ? nameList[0]
+      : nameList.slice(0, -1).join(', ') + ' and ' + nameList[nameList.length - 1]
 
   return (
     <div className="max-w-xl mx-auto text-center space-y-6 py-12">
@@ -20,8 +26,9 @@ export default function RegistrationSuccessPage() {
           You're registered!
         </h1>
         <p className="text-muted leading-relaxed">
-          <strong style={{ color: 'var(--ca-ink)' }}>{childName}</strong> is
-          signed up. {parentEmail && (
+          <strong style={{ color: 'var(--ca-ink)' }}>{displayNames}</strong>{' '}
+          {nameList.length > 1 ? 'are' : 'is'} signed up.{' '}
+          {parentEmail && (
             <>A confirmation has been sent to <strong style={{ color: 'var(--ca-ink)' }}>{parentEmail}</strong>.</>
           )}
         </p>

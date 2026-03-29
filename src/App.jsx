@@ -11,6 +11,10 @@ import ProtectedRoute from './components/ProtectedRoute.jsx'
 import BlogPage from './pages/BlogPage.jsx'
 import HomePage from './pages/HomePage.jsx'
 
+// Account pages
+import SignInPage from './pages/account/SignInPage.jsx'
+import SignUpPage from './pages/account/SignUpPage.jsx'
+
 // Classes pages
 import ClassDetailPage from './pages/classes/ClassDetailPage.jsx'
 import ClassesPage from './pages/classes/ClassesPage.jsx'
@@ -41,6 +45,10 @@ export default function App() {
           <Route path="/classes/:id/register" element={<RegistrationPage />} />
           <Route path="/classes/:id/register/success" element={<RegistrationSuccessPage />} />
           <Route path="/classes/:id/waitlist" element={<WaitlistPage />} />
+          <Route path="/account/signup" element={<SignUpPage />} />
+          <Route path="/account/signin" element={<SignInPage />} />
+          {/* Legacy /signin redirect */}
+          <Route path="/signin" element={<SignInPage />} />
         </Route>
 
         {/* ── Admin login (public, no layout) ── */}
